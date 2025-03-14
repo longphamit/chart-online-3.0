@@ -1,0 +1,11 @@
+query GetPostsForShowList {
+  Post {
+    id
+    status
+    title
+    description
+    tags
+    categoryId
+    slug
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "start": "node .output/server/index.mjs"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.13.4",
+    "@nuxt/ui": "^2.21.1",
+    "@nuxtjs/robots": "^5.2.6",
+    "@nuxtjs/sitemap": "^7.2.7",
+    "graphql": "^16.10.0",
+    "graphql-request": "^7.1.2",
+    "katex": "^0.16.21",
+    "nuxt": "^3.16.0",
+    "plotly.js-dist": "^3.0.1",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@nuxtjs/apollo": "^5.0.0-alpha.14",
+    "@unocss/nuxt": "^66.1.0-beta.3"
+  }
+}

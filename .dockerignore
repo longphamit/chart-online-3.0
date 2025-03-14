@@ -1,0 +1,12 @@
+node_modules
+.git
+.gitignore
+Dockerfile
+Dockerfile.prod
+*.md
+dist
+.output
+.env
+.npmrc
+yarn.lock
+pnpm-lock.yaml

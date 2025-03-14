@@ -1,0 +1,13 @@
+version: '3.7'
+services:
+  # Next.js service
+  nextjs:
+    image: longphamjustdoit/chart-online-v3
+    container_name: chart-online-v3
+    ports:
+      - "8501:3000"
+    networks:
+      - longpc-network
+networks:
+  longpc-network:
+    external: true
