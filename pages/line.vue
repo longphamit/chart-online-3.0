@@ -7,7 +7,7 @@
       </h1>
       <!-- Đoạn mô tả giới thiệu -->
       <p class="text-gray-600 text-center mb-6">
-        Công cụ vẽ biểu đồ đường online miễn phí giúp bạn trực quan hóa dữ liệu theo thời gian. Nhập nhãn và giá trị, tùy chỉnh và tải xuống biểu đồ dễ dàng trên mọi thiết bị!
+        Công cụ vẽ biểu đồ đường online miễn phí giúp bạn trực quan hóa dữ liệu theo thời gian. Nhập dữ liệu, tùy chỉnh nhãn và tải xuống biểu đồ dễ dàng, hỗ trợ mọi thiết bị!
       </p>
 
       <!-- Container chính -->
@@ -24,7 +24,7 @@
               <UTextarea v-model="chartName" placeholder="Nhập tên biểu đồ..." />
             </UFormGroup>
 
-            <!-- Nhãn dữ liệu -->
+            <!-- Nhãn trục X -->
             <UFormGroup label="Nhãn trục X (cách nhau bởi dấu phẩy)">
               <UTextarea v-model="labels" placeholder="Tháng 1, Tháng 2, Tháng 3..." />
             </UFormGroup>
@@ -32,6 +32,16 @@
             <!-- Giá trị -->
             <UFormGroup label="Giá trị (cách nhau bởi dấu phẩy)">
               <UTextarea v-model="values" placeholder="10, 20, 30..." />
+            </UFormGroup>
+
+            <!-- Tên trục X -->
+            <UFormGroup label="Tên trục X">
+              <UInput v-model="xAxisTitle" placeholder="Nhập tên trục X..." />
+            </UFormGroup>
+
+            <!-- Tên trục Y -->
+            <UFormGroup label="Tên trục Y">
+              <UInput v-model="yAxisTitle" placeholder="Nhập tên trục Y..." />
             </UFormGroup>
 
             <!-- Nút tải xuống -->
@@ -90,6 +100,8 @@ useHead({
 const chartName = ref('Doanh thu hàng tháng')
 const labels = ref('Tháng 1, Tháng 2, Tháng 3')
 const values = ref('10, 20, 30')
+const xAxisTitle = ref('Thời gian')
+const yAxisTitle = ref('Giá trị')
 const lineChartDiv = ref(null)
 let Plotly = null
 
@@ -97,8 +109,26 @@ let Plotly = null
 const renderChart = () => {
   if (!Plotly || !lineChartDiv.value) return
 
-  const xData = labels.value.split(',').map(label => label.trim())
-  const yData = values.value.split(',').map(val => parseFloat(val.trim()))
+  // Xử lý nhãn trục X: Loại bỏ các giá trị rỗng
+  const xData = labels.value
+    .split(',')
+    .map(label => label.trim())
+    .filter(label => label.length > 0) // Chỉ giữ các nhãn không rỗng
+
+  // Xử lý giá trị: Chuyển thành số, thay NaN bằng 0
+  const yData = values.value
+    .split(',')
+    .map(val => {
+      const num = parseFloat(val.trim())
+      return isNaN(num) ? 0 : num
+    })
+    .filter(() => true) // Giữ tất cả giá trị sau khi xử lý
+
+  // Kiểm tra dữ liệu hợp lệ
+  if (xData.length === 0 || yData.length === 0 || xData.length !== yData.length) {
+    console.warn('Dữ liệu không hợp lệ: Nhãn và giá trị phải có cùng số lượng và không rỗng.')
+    return
+  }
 
   const lineData = [{
     type: 'scatter',
@@ -110,11 +140,28 @@ const renderChart = () => {
   }]
 
   const layout = {
-    title: { text: chartName.value, x: 0.5, xanchor: 'center' },
-    xaxis: { title: 'Thời gian', showgrid: false },
-    yaxis: { title: 'Giá trị', zeroline: false },
-    margin: { t: 60, b: 60, l: 50, r: 20 },
-    responsive: true, // Đảm bảo responsive
+    title: {
+      text: chartName.value || 'Biểu đồ mặc định',
+      x: 0.5,
+      xanchor: 'center',
+      font: { size: 18 }
+    },
+    xaxis: {
+      title: {
+        text: xAxisTitle.value || 'Thời gian',
+        standoff: 10
+      },
+      showgrid: false
+    },
+    yaxis: {
+      title: {
+        text: yAxisTitle.value || 'Giá trị',
+        standoff: 10
+      },
+      zeroline: false
+    },
+    margin: { t: 60, b: 80, l: 80, r: 20 },
+    responsive: true,
     autosize: true
   }
 
@@ -137,7 +184,7 @@ const handleResize = () => {
 // Load Plotly
 onMounted(async () => {
   if (process.client) {
-    Plotly = await import('plotly.js-dist')
+    Plotly = await import('plotly.js-dist') // Sử dụng phiên bản chuẩn như biểu đồ cột
     renderChart()
     window.addEventListener('resize', handleResize)
   }
@@ -162,12 +209,16 @@ const downloadChart = () => {
   }
 }
 
-// Theo dõi thay đổi dữ liệu
-watch([chartName, labels, values], () => {
+// Theo dõi thay đổi dữ liệu với debounce
+watch([chartName, labels, values, xAxisTitle, yAxisTitle], () => {
   if (process.client && Plotly) {
-    renderChart()
+    // Debounce để tránh cập nhật quá nhanh
+    clearTimeout(window.renderTimeout)
+    window.renderTimeout = setTimeout(() => {
+      renderChart()
+    }, 300) // Chờ 300ms trước khi vẽ lại
   }
-})
+}, { deep: true }) // Theo dõi thay đổi sâu
 </script>
 
 <style scoped>
