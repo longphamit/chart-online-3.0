@@ -45,7 +45,7 @@ export default defineNuxtConfig({
         httpEndpoint: 'https://directus.longpc.site/graphql'
       },
       directus: {
-        httpEndpoint: 'http://directus.longpc.site/graphql'
+        httpEndpoint: 'https://directus.longpc.site/graphql'
       }
     }
   },
