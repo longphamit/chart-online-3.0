@@ -5,16 +5,12 @@
       <NuxtLink to="/blogs" class="inline-flex items-center px-4 py-2 text-blue-600 bg-blue-50 rounded-full hover:bg-blue-100 hover:text-blue-800 transition-all duration-300 mb-4 shadow-sm">
         <span class="mr-2 text-lg">←</span>
       </NuxtLink>
-      <!-- <span class="inline-block px-3 py-1 text-xs font-semibold text-white bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full mb-3">
-        {{ mapCategory(post?.categoryId) || 'Không xác định' }}
-      </span> -->
       <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4 leading-tight">
         {{ post?.title || 'Đang tải...' }}
       </h1>
       <div class="flex flex-wrap gap-2 mb-4">
         <span v-for="tag in post?.tags || []" :key="tag" class="inline-block px-2 py-1 text-xs text-gray-600 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors duration-200">
           #{{ tag }}
-          
         </span>
       </div>
       <img :src="postImage" :alt="`Hình ảnh minh họa cho ${post?.title || 'bài viết'}`" class="w-full h-64 md:h-80 object-cover rounded-lg mb-6 shadow-md transition-transform duration-300 hover:scale-[1.02]" loading="lazy" />
@@ -28,8 +24,9 @@
 </template>
 
 <script setup>
+import { computed, ref, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { computed, ref, watch } from 'vue'
+import { useHead } from '#app'
 
 definePageMeta({ layout: 'default' })
 
@@ -47,7 +44,7 @@ const GRAPHQL_ENDPOINT = 'https://directus.longpc.site/graphql'
 // Hàm fetch dữ liệu
 const fetchPost = async (postSlug) => {
   if (!postSlug) return
-
+  console.log('Fetching post with slug:', postSlug)
   loading.value = true
   error.value = null
 
@@ -74,8 +71,6 @@ const fetchPost = async (postSlug) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        // Nếu cần token:
-        // 'Authorization': 'Bearer YOUR_TOKEN_HERE'
       },
       body: JSON.stringify({
         query,
@@ -84,22 +79,7 @@ const fetchPost = async (postSlug) => {
     })
 
     if (!response.ok) {
-      if (response.status === 405) {
-        console.warn('POST method not allowed, retrying with GET...')
-        const getResponse = await fetch(`${GRAPHQL_ENDPOINT}?query=${encodeURIComponent(query)}&variables=${encodeURIComponent(JSON.stringify({ slug: postSlug }))}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        })
-        if (!getResponse.ok) {
-          throw new Error(`GET request failed with status: ${getResponse.status}`)
-        }
-        const getResult = await getResponse.json()
-        handleResponse(getResult)
-      } else {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
+      throw new Error(`HTTP error! status: ${response.status}`)
     } else {
       const result = await response.json()
       handleResponse(result)
@@ -134,11 +114,15 @@ const handleResponse = (result) => {
     }
   } else {
     postData.value = result.data.Post[0]
+    console.log('Post data:', postData.value)
   }
 }
 
 // Gọi API khi component được mount và khi slug thay đổi
-fetchPost(slug.value)
+onMounted(() => {
+  fetchPost(slug.value)
+})
+
 watch(
   () => route.params.slug,
   (newSlug) => {
@@ -167,6 +151,32 @@ const mapCategory = (categoryId) => {
   }
   return categoryMap[categoryId] || 'Khác'
 }
+
+// Tối ưu SEO và Open Graph/Twitter Cards
+useHead({
+  title: computed(() => post.value?.title || 'Đang tải...'),
+  meta: [
+    // SEO cơ bản
+    { name: 'description', content: computed(() => post.value?.description || 'Bài viết không có mô tả.') },
+    { name: 'keywords', content: computed(() => post.value?.tags?.join(', ') || 'blog, bài viết') },
+
+    // Open Graph
+    { property: 'og:title', content: computed(() => post.value?.title || 'Đang tải...') },
+    { property: 'og:description', content: computed(() => post.value?.description || 'Bài viết không có mô tả.') },
+    { property: 'og:image', content: postImage },
+    { property: 'og:url', content: computed(() => `https://tomchart.com/blogs/${slug.value}`) },
+    { property: 'og:type', content: 'article' },
+
+    // Twitter Cards
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:title', content: computed(() => post.value?.title || 'Đang tải...') },
+    { name: 'twitter:description', content: computed(() => post.value?.description || 'Bài viết không có mô tả.') },
+    { name: 'twitter:image', content: postImage },
+  ],
+  link: [
+    { rel: 'canonical', href: computed(() => `https://tomchart.com/blogs/${slug.value}`) }
+  ]
+})
 </script>
 
 <style scoped>
