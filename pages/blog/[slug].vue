@@ -14,6 +14,7 @@
       <div class="flex flex-wrap gap-2 mb-4">
         <span v-for="tag in post?.tags || []" :key="tag" class="inline-block px-2 py-1 text-xs text-gray-600 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors duration-200">
           #{{ tag }}
+          
         </span>
       </div>
       <img :src="postImage" :alt="`Hình ảnh minh họa cho ${post?.title || 'bài viết'}`" class="w-full h-64 md:h-80 object-cover rounded-lg mb-6 shadow-md transition-transform duration-300 hover:scale-[1.02]" loading="lazy" />
