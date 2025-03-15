@@ -84,7 +84,7 @@ useHead({
     { name: 'author', content: 'LongPC, devmonit99@gmail.com' }
   ],
   link: [
-    { rel: 'canonical', href: 'https://yourdomain.com' } // Thay bằng domain thực tế
+    { rel: 'canonical', href: 'https://tomchart.com' } // Thay bằng domain thực tế
   ]
 })
 
