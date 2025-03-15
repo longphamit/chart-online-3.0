@@ -98,7 +98,7 @@ useHead({
     { name: 'robots', content: 'index, follow' }
   ],
   link: [
-    { rel: 'canonical', href: 'https://yourdomain.com/bieu-do-parabol' } // Thay bằng URL thực tế
+    { rel: 'canonical', href: 'https://tomchart.com/parabol' } // Thay bằng URL thực tế
   ]
 })
 

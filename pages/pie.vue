@@ -84,8 +84,8 @@ useHead({
     { property: 'og:type', content: 'website' },
     { property: 'og:title', content: 'Vẽ Biểu Đồ Tròn Online - Công Cụ Miễn Phí' },
     { property: 'og:description', content: 'Công cụ vẽ biểu đồ tròn online miễn phí, trực quan hóa dữ liệu dễ dàng.' },
-    { property: 'og:url', content: 'https://vebieudo.online/pie' },
-    { property: 'og:image', content: 'https://vebieudo.online/chart-preview.png' }, // Cập nhật ảnh thực tế
+    { property: 'og:url', content: 'https://tomchart.com/pie' },
+    { property: 'og:image', content: 'https://tomchart.com/chart-preview.png' }, // Cập nhật ảnh thực tế
     { property: 'og:image:width', content: '1200' },
     { property: 'og:image:height', content: '630' },
     { property: 'og:locale', content: 'vi_VN' },
@@ -94,11 +94,11 @@ useHead({
     { name: 'twitter:card', content: 'summary_large_image' },
     { name: 'twitter:title', content: 'Vẽ Biểu Đồ Tròn Online - Công Cụ Miễn Phí' },
     { name: 'twitter:description', content: 'Công cụ vẽ biểu đồ tròn online miễn phí, trực quan hóa dữ liệu dễ dàng.' },
-    { name: 'twitter:image', content: 'https://vebieudo.online/chart-preview.png' }
+    { name: 'twitter:image', content: 'https://tomchart.com/chart-preview.png' }
     
   ],
   link: [
-    { rel: 'canonical', href: 'https://vebieudo.online/pie' } // Thay bằng URL thực tế
+    { rel: 'canonical', href: 'https://tomchart.com/pie' } // Thay bằng URL thực tế
   ],
   script: [
     {
@@ -108,14 +108,14 @@ useHead({
         "@type": "WebPage",
         "name": "Vẽ Biểu Đồ Tròn Online - Công Cụ Miễn Phí",
         "description": "Công cụ vẽ biểu đồ tròn online miễn phí giúp trực quan hóa dữ liệu dễ dàng.",
-        "url": "https://vebieudo.online/pie",
-        "image": "https://vebieudo.online/chart-preview.png",
+        "url": "https://tomchart.com/pie",
+        "image": "https://tomchart.com/chart-preview.png",
         "publisher": {
           "@type": "Organization",
           "name": "Vẽ Biểu Đồ Online",
           "logo": {
             "@type": "ImageObject",
-            "url": "https://vebieudo.online/static/logo.png"
+            "url": "https://tomchart.com/static/logo.png"
           }
         },
         "mainEntity": {

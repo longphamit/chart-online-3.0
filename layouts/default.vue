@@ -102,8 +102,8 @@ useHead({
     { property: 'og:type', content: 'website' },
     { property: 'og:title', content: 'Vẽ Biểu Đồ Online - Công Cụ Miễn Phí' },
     { property: 'og:description', content: 'Công cụ vẽ biểu đồ online miễn phí, trực quan hóa dữ liệu dễ dàng.' },
-    { property: 'og:url', content: 'https://vebieudo.online/pie' },
-    { property: 'og:image', content: 'https://vebieudo.online/chart-preview.png' }, // Cập nhật ảnh thực tế
+    { property: 'og:url', content: 'https://tomchart.com/pie' },
+    { property: 'og:image', content: 'https://tomchart.com/chart-preview.png' }, // Cập nhật ảnh thực tế
     { property: 'og:image:width', content: '1200' },
     { property: 'og:image:height', content: '630' },
     { property: 'og:locale', content: 'vi_VN' },
@@ -112,10 +112,10 @@ useHead({
     { name: 'twitter:card', content: 'summary_large_image' },
     { name: 'twitter:title', content: 'Vẽ Biểu Đồ Online - Công Cụ Miễn Phí' },
     { name: 'twitter:description', content: 'Công cụ vẽ biểu đồ online miễn phí, trực quan hóa dữ liệu dễ dàng.' },
-    { name: 'twitter:image', content: 'https://vebieudo.online/chart-preview.png' }
+    { name: 'twitter:image', content: 'https://tomchart.com/chart-preview.png' }
   ],
   link: [
-    { rel: 'canonical', href: 'https://vebieudo.online' } // Thay bằng domain thực tế
+    { rel: 'canonical', href: 'https://tomchart.com' } // Thay bằng domain thực tế
   ]
 })
 

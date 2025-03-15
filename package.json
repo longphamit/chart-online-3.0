@@ -13,6 +13,7 @@
   "dependencies": {
     "@apollo/client": "^3.13.4",
     "@nuxt/ui": "^2.21.1",
+    "@nuxtjs/i18n": "^9.3.1",
     "@nuxtjs/robots": "^5.2.6",
     "@nuxtjs/sitemap": "^7.2.7",
     "graphql": "^16.10.0",
@@ -25,6 +26,7 @@
   },
   "devDependencies": {
     "@nuxtjs/apollo": "^5.0.0-alpha.14",
-    "@unocss/nuxt": "^66.1.0-beta.3"
+    "@unocss/nuxt": "^66.1.0-beta.3",
+    "typescript": "^5.8.2"
   }
 }

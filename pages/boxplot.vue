@@ -90,7 +90,7 @@
       { name: 'robots', content: 'index, follow' }
     ],
     link: [
-      { rel: 'canonical', href: 'https://yourdomain.com/bieu-do-box-plot' } // Thay bằng URL thực tế
+      { rel: 'canonical', href: 'https://tomchart.com/boxplot' } // Thay bằng URL thực tế
     ]
   })
   

@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
-  modules: ['@nuxt/ui', '@nuxtjs/robots', '@nuxtjs/sitemap', '@nuxtjs/apollo'],
+  modules: ['@nuxt/ui', '@nuxtjs/robots', '@nuxtjs/sitemap', '@nuxtjs/apollo','@nuxtjs/i18n'],
 
   app: {
     head: {
@@ -15,16 +15,25 @@ export default defineNuxtConfig({
       ]
     }
   },
+  i18n: {
+    locales: [
+      { code: 'en', iso: 'en-US', file: 'en.json', name: 'English' },
+      { code: 'vi', iso: 'vi-VN', file: 'vi.json', name: 'Tiếng Việt' }
+    ],
+    defaultLocale: 'en',
+    langDir: 'locales/',
+    strategy: 'prefix_except_default'
+  },
 
   robots: {
     UserAgent: '*',
     Disallow: ['/admin', '/private'],
     Allow: '/',
-    Sitemap: 'https://vebieudo.online/sitemap.xml'
+    Sitemap: 'https://tomchart.com/sitemap.xml'
   },
 
   sitemap: {
-    hostname: 'https://vebieudo.online',
+    hostname: 'https://tomchart.com',
     routes: [
       '/',
       '/bar',

@@ -113,7 +113,7 @@ useHead({
     { name: 'robots', content: 'index, follow' }
   ],
   link: [
-    { rel: 'canonical', href: 'https://yourdomain.com/bieu-do-roi-rac' } // Thay bằng URL thực tế
+    { rel: 'canonical', href: 'https://tomchart.com/scatter' } // Thay bằng URL thực tế
   ]
 })
 

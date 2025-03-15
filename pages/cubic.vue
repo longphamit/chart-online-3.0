@@ -105,7 +105,7 @@ useHead({
     { name: 'robots', content: 'index, follow' }
   ],
   link: [
-    { rel: 'canonical', href: 'https://yourdomain.com/do-thi-ham-so-bac-3' } // Thay bằng URL thực tế
+    { rel: 'canonical', href: 'https://tomchart.com/cubic' } // Thay bằng URL thực tế
   ]
 })
 
