@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
-  modules: ['@nuxt/ui', '@nuxtjs/robots', '@nuxtjs/sitemap', '@nuxtjs/apollo','@nuxtjs/i18n'],
+  modules: ['@nuxt/ui', '@nuxtjs/sitemap', '@nuxtjs/apollo','@nuxtjs/i18n'],
 
   app: {
     head: {
@@ -25,25 +25,17 @@ export default defineNuxtConfig({
     strategy: 'prefix_except_default'
   },
 
-  robots: {
-    UserAgent: '*',
-    Disallow: ['/admin', '/private'],
-    Allow: '/',
-    Sitemap: 'https://tomchart.com/sitemap.xml'
-  },
+  // robots: {
+  //   UserAgent: '*',
+  //   Disallow: ['/admin', '/private'],
+  //   Allow: '/',
+  //   Sitemap: 'https://tomchart.com/sitemap.xml'
+  // },
 
   sitemap: {
     hostname: 'https://tomchart.com',
-    routes: [
-      '/',
-      '/bar',
-      '/boxplot',
-      '/cubic',
-      '/line',
-      '/pie',
-      '/parabol',
-      '/scatter',
-    ]
+    robots: false, // Tắt tích hợp robots.txt từ sitemap module
+    i18n: true
   },
 
   // Cấu hình Apollo cho Nuxt 3
