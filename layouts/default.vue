@@ -79,60 +79,70 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
+
+// Sử dụng useI18n để lấy hàm dịch
+const { t } = useI18n()
+// Khởi tạo useI18n
+const { locale } = useI18n()
+const localeMap = {
+  vi: 'vi_VN',
+  en: 'en_US'
+}
+// Lấy mã locale tương ứng với ngôn ngữ hiện tại
+const currentLocale = localeMap[locale.value] || 'en_US' // Mặc định là 'en_US' nếu không tìm thấy
 // Tối ưu SEO với useHead của Nuxt 3 (cơ bản cho layout)
 useHead({
-  title: 'Chart Online - Công Cụ Vẽ Biểu Đồ Miễn Phí',
+  title: t('seo.title'),
   meta: [
     { charset: 'utf-8' },
     { name: 'viewport', content: 'width=device-width, initial-scale=1' },
     {
       hid: 'description',
       name: 'description',
-      content: 'Chart Online - Công cụ vẽ biểu đồ miễn phí, hỗ trợ biểu đồ cột, đường, tròn, parabol, box plot và hàm số bậc 3. Trực quan hóa dữ liệu dễ dàng trên mọi thiết bị.'
+      content: t('seo.description')
     },
     {
       name: 'keywords',
-      content: 'vẽ biểu đồ online, công cụ vẽ biểu đồ, biểu đồ cột, biểu đồ đường, biểu đồ tròn, parabol, box plot, hàm số bậc 3, trực quan hóa dữ liệu'
+      content: t('seo.keywords')
     },
     { name: 'robots', content: 'index, follow' },
     { name: 'author', content: 'LongPC, devmonit99@gmail.com' },
-
-    // Open Graph Meta Tags
     { property: 'og:type', content: 'website' },
-    { property: 'og:title', content: 'Vẽ Biểu Đồ Online - Công Cụ Miễn Phí' },
-    { property: 'og:description', content: 'Công cụ vẽ biểu đồ online miễn phí, trực quan hóa dữ liệu dễ dàng.' },
+    { property: 'og:title', content: t('seo.ogTitle') },
+    { property: 'og:description', content: t('seo.ogDescription') },
     { property: 'og:url', content: 'https://tomchart.com/pie' },
-    { property: 'og:image', content: 'https://tomchart.com/chart-preview.png' }, // Cập nhật ảnh thực tế
+    { property: 'og:image', content: 'https://tomchart.com/chart-preview.png' },
     { property: 'og:image:width', content: '1200' },
     { property: 'og:image:height', content: '630' },
-    { property: 'og:locale', content: 'vi_VN' },
-
-    // Twitter Card Meta Tags (Hỗ trợ Twitter khi chia sẻ link)
+    { property: 'og:locale', content: currentLocale },
     { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: 'Vẽ Biểu Đồ Online - Công Cụ Miễn Phí' },
-    { name: 'twitter:description', content: 'Công cụ vẽ biểu đồ online miễn phí, trực quan hóa dữ liệu dễ dàng.' },
+    { name: 'twitter:title', content: t('seo.twitterTitle') },
+    { name: 'twitter:description', content: t('seo.twitterDescription') },
     { name: 'twitter:image', content: 'https://tomchart.com/chart-preview.png' }
   ],
   link: [
-    { rel: 'canonical', href: 'https://tomchart.com' } // Thay bằng domain thực tế
+    { rel: 'canonical', href: 'https://tomchart.com' }
   ]
 })
 
 // State để điều khiển sidebar trên mobile
 const isSidebarOpen = ref(false)
 
-// Danh sách navigation items (thêm Blog)
+
+
+// Danh sách navigation items với tên lấy từ i18n
 const navItems = [
-  { path: '/', name: 'Trang chủ', icon: '🏠' },
-  { path: '/bar', name: 'Biểu đồ Cột', icon: '📊' },
-  { path: '/line', name: 'Biểu đồ Đường', icon: '📈' },
-  { path: '/pie', name: 'Biểu đồ Tròn', icon: '🥧' },
-  { path: '/scatter', name: 'Scatter Plot', icon: '🔴' },
-  { path: '/parabol', name: 'Parabol', icon: '📐' },
-  { path: '/boxplot', name: 'Box Plot', icon: '📦' },
-  { path: '/cubic', name: 'Phương trình bậc 3', icon: '〽️' },
-  { path: '/blogs', name: 'Blog', icon: '📝' }, // Thêm mục Blog
+  { path: '/', name: t('home'), icon: '🏠' },
+  { path: '/bar', name: t('barChart'), icon: '📊' },
+  { path: '/line', name: t('lineChart'), icon: '📈' },
+  { path: '/pie', name: t('pieChart'), icon: '🥧' },
+  { path: '/scatter', name: t('scatterPlot'), icon: '🔴' },
+  { path: '/parabol', name: t('parabol'), icon: '📐' },
+  { path: '/boxplot', name: t('boxPlot'), icon: '📦' },
+  { path: '/cubic', name: t('cubicFunction'), icon: '〽️' },
+  { path: '/blogs', name: t('blog'), icon: '📝' },
 ]
 
 // Hàm toggle sidebar
@@ -156,5 +166,3 @@ const closeSidebar = () => {
   font-family: 'Roboto', sans-serif;
 }
 </style>
-
-

@@ -1,5 +1,24 @@
 {
     "greeting": "Hello, world!",
     "about": "About Us",
-    "welcome": "Welcome to our website"
+    "welcome": "Welcome to our website",
+
+    "title": "Chart Online - Free Charting Tool",
+    "description": "Chart Online - A free tool for creating bar, line, pie, parabol, box plot, and cubic function charts. Easily visualize data on any device.",
+    "keywords": "online charting, charting tool, bar chart, line chart, pie chart, parabol, box plot, cubic function, data visualization",
+    
+    "ogTitle": "Chart Online - Free Charting Tool",
+    "ogDescription": "A free online charting tool for easy data visualization.",
+    "twitterTitle": "Chart Online - Free Charting Tool",
+    "twitterDescription": "A free online charting tool for easy data visualization.",
+
+    "home": "Home",
+    "barChart": "Bar Chart",
+    "lineChart": "Line Chart",
+    "pieChart": "Pie Chart",
+    "scatterPlot": "Scatter Plot",
+    "parabol": "Parabol",
+    "boxPlot": "Box Plot",
+    "cubicFunction": "Cubic Function",
+    "blog": "Blog"
   }

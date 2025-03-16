@@ -1,5 +1,24 @@
 {
     "greeting": "Xin chào, thế giới!",
     "about": "Về Chúng Tôi",
-    "welcome": "Chào mừng đến với trang web của chúng tôi"
+    "welcome": "Chào mừng đến với trang web của chúng tôi",
+
+   "title": "Chart Online - Công Cụ Vẽ Biểu Đồ Miễn Phí",
+    "description": "Chart Online - Công cụ vẽ biểu đồ miễn phí, hỗ trợ biểu đồ cột, đường, tròn, parabol, box plot và hàm số bậc 3. Trực quan hóa dữ liệu dễ dàng trên mọi thiết bị.",
+    "keywords": "vẽ biểu đồ online, công cụ vẽ biểu đồ, biểu đồ cột, biểu đồ đường, biểu đồ tròn, parabol, box plot, hàm số bậc 3, trực quan hóa dữ liệu",
+    "ogTitle": "Vẽ Biểu Đồ Online - Công Cụ Miễn Phí",
+    "ogDescription": "Công cụ vẽ biểu đồ online miễn phí, trực quan hóa dữ liệu dễ dàng.",
+    "twitterTitle": "Vẽ Biểu Đồ Online - Công Cụ Miễn Phí",
+    "twitterDescription": "Công cụ vẽ biểu đồ online miễn phí, trực quan hóa dữ liệu dễ dàng.",
+    
+    "home": "Trang chủ",
+    "barChart": "Biểu đồ Cột",
+    "lineChart": "Biểu đồ Đường",
+    "pieChart": "Biểu đồ Tròn",
+    "scatterPlot": "Scatter Plot",
+    "parabol": "Parabol",
+    "boxPlot": "Box Plot",
+    "cubicFunction": "Phương trình bậc 3",
+    "blog": "Blog"
+    
   }
