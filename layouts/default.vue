@@ -94,32 +94,32 @@ const localeMap = {
 const currentLocale = localeMap[locale.value] || 'en_US' // Mặc định là 'en_US' nếu không tìm thấy
 // Tối ưu SEO với useHead của Nuxt 3 (cơ bản cho layout)
 useHead({
-  title: t('seo.title'),
+  title: t('title'),
   meta: [
     { charset: 'utf-8' },
     { name: 'viewport', content: 'width=device-width, initial-scale=1' },
     {
       hid: 'description',
       name: 'description',
-      content: t('seo.description')
+      content: t('description')
     },
     {
       name: 'keywords',
-      content: t('seo.keywords')
+      content: t('keywords')
     },
     { name: 'robots', content: 'index, follow' },
     { name: 'author', content: 'LongPC, devmonit99@gmail.com' },
     { property: 'og:type', content: 'website' },
-    { property: 'og:title', content: t('seo.ogTitle') },
-    { property: 'og:description', content: t('seo.ogDescription') },
+    { property: 'og:title', content: t('ogTitle') },
+    { property: 'og:description', content: t('ogDescription') },
     { property: 'og:url', content: 'https://tomchart.com/pie' },
     { property: 'og:image', content: 'https://tomchart.com/chart-preview.png' },
     { property: 'og:image:width', content: '1200' },
     { property: 'og:image:height', content: '630' },
     { property: 'og:locale', content: currentLocale },
     { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: t('seo.twitterTitle') },
-    { name: 'twitter:description', content: t('seo.twitterDescription') },
+    { name: 'twitter:title', content: t('twitterTitle') },
+    { name: 'twitter:description', content: t('twitterDescription') },
     { name: 'twitter:image', content: 'https://tomchart.com/chart-preview.png' }
   ],
   link: [
@@ -157,7 +157,6 @@ const closeSidebar = () => {
   }
 }
 </script>
-
 <style>
 /* Tùy chỉnh font chữ cho toàn bộ ứng dụng hoặc chỉ sidebar */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap&subset=vietnamese');

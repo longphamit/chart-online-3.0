@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { useAsyncData, useRouter } from 'nuxt/app'
 
 // State cho phân trang và lọc
 const currentPage = ref(1)
@@ -10,7 +11,6 @@ const categories = ref(['Tất cả', 'Toán học', 'Khảo sát', 'Xã hội',
 // State cho việc tải dữ liệu
 const loading = ref(false)
 const error = ref(null)
-const posts = ref([])
 
 // Base URL cho ảnh từ Directus
 const DIRECTUS_ASSETS_URL = 'http://directus.longpc.site/assets'
@@ -18,12 +18,11 @@ const DIRECTUS_ASSETS_URL = 'http://directus.longpc.site/assets'
 // GraphQL endpoint
 const GRAPHQL_ENDPOINT = 'https://directus.longpc.site/graphql'
 
-// Hàm fetch dữ liệu
-const fetchPosts = async () => {
+// Fetch dữ liệu trên server-side với useAsyncData
+const { data: posts, pending, error: fetchError } = await useAsyncData('posts', async () => {
   loading.value = true
   error.value = null
 
-  // Chuẩn hóa query string
   const query = `
     query GetPosts {
       Post {
@@ -39,7 +38,7 @@ const fetchPosts = async () => {
         }
       }
     }
-  `.replace(/\s+/g, ' ').trim() // Loại bỏ khoảng trắng và xuống dòng dư thừa
+  `.replace(/\s+/g, ' ').trim()
 
   try {
     const response = await fetch(GRAPHQL_ENDPOINT, {
@@ -58,42 +57,38 @@ const fetchPosts = async () => {
 
     const result = await response.json()
 
-    // Kiểm tra lỗi GraphQL
     if (result.errors) {
       throw new Error(result.errors[0].message || 'GraphQL error occurred')
     }
 
-    // Đảm bảo dữ liệu tồn tại
     if (!result.data || !result.data.Post) {
       throw new Error('No data returned from server')
     }
 
-    posts.value = result.data.Post
+    return result.data.Post
   } catch (err) {
-    error.value = err
+    error.value = err.message
     console.error('Error fetching posts:', err)
+    return []
   } finally {
     loading.value = false
   }
-}
-
-// Gọi API khi component được mount
-fetchPosts()
+})
 
 // Xử lý dữ liệu bài viết
 const blogPosts = computed(() => {
-  if (!posts.value.length) return []
+  if (!posts.value || !posts.value.length) return []
   return posts.value.map(post => ({
     id: post.id,
     slug: post.slug.replace(/\s+/g, '-'),
     title: post.title,
     excerpt: post.description,
-    image: post.thumbnail?.id 
-      ? `${DIRECTUS_ASSETS_URL}/${post.thumbnail.id}` 
+    image: post.thumbnail?.id
+      ? `${DIRECTUS_ASSETS_URL}/${post.thumbnail.id}`
       : 'https://via.placeholder.com/400x200.png?text=' + encodeURIComponent(post.title),
     category: mapCategory(post.categoryId),
     tags: post.tags || [],
-    status: post.status,
+    status: post.status
   }))
 })
 
@@ -140,9 +135,21 @@ const selectCategory = (category) => {
 }
 
 // Hàm điều hướng khi click bài viết
+const router = useRouter()
 const goToPost = (slug) => {
-  window.location.href = `/blog/${slug}`
+  router.push(`/blog/${slug}`)
 }
+
+// SEO metadata
+definePageMeta({
+  title: 'Chart Online Blog',
+  meta: [
+    {
+      name: 'description',
+      content: 'Khám phá các bài viết về trực quan hóa dữ liệu qua các lĩnh vực: Toán học, Khảo sát, Xã hội và Công nghệ.'
+    }
+  ]
+})
 </script>
 
 <template>
@@ -161,8 +168,10 @@ const goToPost = (slug) => {
     <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-8">
       <!-- Blog Posts -->
       <section class="lg:col-span-3">
-        <div v-if="loading" class="text-center py-8">Đang tải bài viết...</div>
-        <div v-else-if="error" class="text-center py-8 text-red-500">Lỗi: {{ error.message }}</div>
+        <div v-if="loading || pending" class="text-center py-8">Đang tải bài viết...</div>
+        <div v-else-if="error || fetchError" class="text-center py-8 text-red-500">
+          Lỗi: {{ error || fetchError }}
+        </div>
         <div v-else>
           <!-- Blog Posts Grid -->
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8">

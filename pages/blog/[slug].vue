@@ -6,7 +6,7 @@
         <span class="mr-2 text-lg">←</span>
       </NuxtLink>
       <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4 leading-tight">
-        {{ post?.title || 'Đang tải...' }}
+        {{ post?.title || 'Không tìm thấy bài viết' }}
       </h1>
       <div class="flex flex-wrap gap-2 mb-4">
         <span v-for="tag in post?.tags || []" :key="tag" class="inline-block px-2 py-1 text-xs text-gray-600 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors duration-200">
@@ -16,38 +16,26 @@
       <img :src="postImage" :alt="`Hình ảnh minh họa cho ${post?.title || 'bài viết'}`" class="w-full h-64 md:h-80 object-cover rounded-lg mb-6 shadow-md transition-transform duration-300 hover:scale-[1.02]" loading="lazy" />
     </header>
 
-    <!-- Content -->
+    <!-- Nội dung bài viết -->
     <section class="prose prose-lg text-gray-700 mb-12">
-      <div v-html="post?.content || '<p>Đang tải nội dung...</p>'" class="leading-relaxed"></div>
+      <div v-html="post?.content || '<p>Không có nội dung.</p>'" class="leading-relaxed"></div>
     </section>
   </div>
 </template>
 
 <script setup>
-import { computed, ref, watch, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useAsyncData } from 'nuxt/app'
+import { computed } from 'vue'
 import { useHead } from '#app'
 
 definePageMeta({ layout: 'default' })
 
 const route = useRoute()
-const slug = ref(route.params.slug || '')
+const slug = route.params.slug
 
-// State cho việc tải dữ liệu
-const loading = ref(false)
-const error = ref(null)
-const postData = ref(null)
-
-// GraphQL endpoint
-const GRAPHQL_ENDPOINT = 'https://directus.longpc.site/graphql'
-
-// Hàm fetch dữ liệu
-const fetchPost = async (postSlug) => {
-  if (!postSlug) return
-  console.log('Fetching post with slug:', postSlug)
-  loading.value = true
-  error.value = null
-
+// Fetch dữ liệu từ API GraphQL trước khi trang render
+const { data: postData, error } = await useAsyncData(`post-${slug}`, async () => {
+  const GRAPHQL_ENDPOINT = 'https://directus.longpc.site/graphql'
   const query = `
     query GetPost($slug: String!) {
       Post(filter: { slug: { _eq: $slug } }) {
@@ -56,8 +44,6 @@ const fetchPost = async (postSlug) => {
         title
         content
         slug
-        partnerId
-        categoryId
         tags
         thumbnail {
           id
@@ -69,114 +55,56 @@ const fetchPost = async (postSlug) => {
   try {
     const response = await fetch(GRAPHQL_ENDPOINT, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        query,
-        variables: { slug: postSlug }
-      })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query, variables: { slug } })
     })
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    } else {
-      const result = await response.json()
-      handleResponse(result)
+    if (!response.ok) throw new Error(`Lỗi HTTP: ${response.status}`)
+    
+    const result = await response.json()
+    if (!result.data || !result.data.Post || result.data.Post.length === 0) {
+      throw new Error('Bài viết không tồn tại')
     }
+
+    return result.data.Post[0]
   } catch (err) {
-    error.value = err
-    console.error('Error fetching post:', err)
-    postData.value = {
+    console.error('Lỗi khi lấy bài viết:', err)
+    return {
       title: 'Không tìm thấy bài viết',
-      content: '<p>Bài viết bạn đang tìm không tồn tại. Vui lòng kiểm tra lại đường dẫn.</p>',
-      categoryId: null,
+      content: '<p>Bài viết bạn đang tìm không tồn tại hoặc đã bị xóa.</p>',
       tags: [],
       thumbnail: null,
     }
-  } finally {
-    loading.value = false
   }
-}
-
-// Xử lý response từ API
-const handleResponse = (result) => {
-  if (result.errors) {
-    throw new Error(result.errors[0].message || 'GraphQL error occurred')
-  }
-  if (!result.data || !result.data.Post || result.data.Post.length === 0) {
-    postData.value = {
-      title: 'Không tìm thấy bài viết',
-      content: '<p>Bài viết bạn đang tìm không tồn tại. Vui lòng kiểm tra lại đường dẫn.</p>',
-      categoryId: null,
-      tags: [],
-      thumbnail: null,
-    }
-  } else {
-    postData.value = result.data.Post[0]
-    console.log('Post data:', postData.value)
-  }
-}
-
-// Gọi API khi component được mount và khi slug thay đổi
-onMounted(() => {
-  fetchPost(slug.value)
 })
 
-watch(
-  () => route.params.slug,
-  (newSlug) => {
-    if (newSlug && newSlug !== slug.value) {
-      slug.value = newSlug
-      fetchPost(newSlug)
-    }
-  }
-)
-
-const post = computed(() => postData.value || null)
-
+// Xử lý ảnh đại diện bài viết
 const postImage = computed(() => {
-  if (!post.value?.thumbnail?.id) {
-    return `https://via.placeholder.com/400x200.png?text=${encodeURIComponent(post.value?.title || 'Not Found')}`
+  if (!postData.value?.thumbnail?.id) {
+    return `https://via.placeholder.com/400x200.png?text=${encodeURIComponent(postData.value?.title || 'Not Found')}`
   }
-  return `http://directus.longpc.site/assets/${post.value.thumbnail.id}`
+  return `http://directus.longpc.site/assets/${postData.value.thumbnail.id}`
 })
-
-const mapCategory = (categoryId) => {
-  const categoryMap = {
-    '1': 'Toán học',
-    '2': 'Khảo sát',
-    '3': 'Xã hội',
-    '4': 'Công nghệ'
-  }
-  return categoryMap[categoryId] || 'Khác'
-}
 
 // Tối ưu SEO và Open Graph/Twitter Cards
 useHead({
-  title: computed(() => post.value?.title || 'Đang tải...'),
+  title: computed(() => postData.value?.title || 'Không tìm thấy bài viết'),
   meta: [
-    // SEO cơ bản
-    { name: 'description', content: computed(() => post.value?.description || 'Bài viết không có mô tả.') },
-    { name: 'keywords', content: computed(() => post.value?.tags?.join(', ') || 'blog, bài viết') },
-
-    // Open Graph
-    { property: 'og:title', content: computed(() => post.value?.title || 'Đang tải...') },
-    { property: 'og:description', content: computed(() => post.value?.description || 'Bài viết không có mô tả.') },
+    { name: 'description', content: computed(() => postData.value?.description || 'Bài viết không có mô tả.') },
+    { property: 'og:title', content: computed(() => postData.value?.title || 'Không tìm thấy bài viết') },
+    { property: 'og:description', content: computed(() => postData.value?.description || 'Bài viết không có mô tả.') },
     { property: 'og:image', content: postImage },
-    { property: 'og:url', content: computed(() => `https://tomchart.com/blogs/${slug.value}`) },
+    { property: 'og:url', content: computed(() => `https://tomchart.com/blogs/${slug}`) },
     { property: 'og:type', content: 'article' },
-
-    // Twitter Cards
     { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: computed(() => post.value?.title || 'Đang tải...') },
-    { name: 'twitter:description', content: computed(() => post.value?.description || 'Bài viết không có mô tả.') },
+    { name: 'twitter:title', content: computed(() => postData.value?.title || 'Không tìm thấy bài viết') },
+    { name: 'twitter:description', content: computed(() => postData.value?.description || 'Bài viết không có mô tả.') },
     { name: 'twitter:image', content: postImage },
   ],
-  link: [
-    { rel: 'canonical', href: computed(() => `https://tomchart.com/blogs/${slug.value}`) }
-  ]
+  link: [{ rel: 'canonical', href: computed(() => `https://tomchart.com/blogs/${slug}`) }]
 })
+
+const post = computed(() => postData.value)
 </script>
 
 <style scoped>

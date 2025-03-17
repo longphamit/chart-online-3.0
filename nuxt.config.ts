@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
-  modules: ['@nuxt/ui', '@nuxtjs/sitemap', '@nuxtjs/apollo','@nuxtjs/i18n'],
+  modules: ['@nuxt/ui', '@nuxtjs/sitemap', '@nuxtjs/apollo','@nuxtjs/i18n','nuxt-gtag'],
 
   app: {
     head: {
@@ -53,4 +53,7 @@ export default defineNuxtConfig({
 
   plugins: ['~/plugins/katex.js'],
   css: ['katex/dist/katex.min.css'],
+  gtag: {
+    id: 'G-24BGH0YH7H', 
+  }
 })
