@@ -94,14 +94,14 @@ useHead({
     { property: 'og:title', content: computed(() => postData.value?.title || 'Không tìm thấy bài viết') },
     { property: 'og:description', content: computed(() => postData.value?.description || 'Bài viết không có mô tả.') },
     { property: 'og:image', content: postImage },
-    { property: 'og:url', content: computed(() => `https://tomchart.com/blogs/${slug}`) },
+    { property: 'og:url', content: computed(() => `https://tomchart.com/blog/${slug}`) },
     { property: 'og:type', content: 'article' },
     { name: 'twitter:card', content: 'summary_large_image' },
     { name: 'twitter:title', content: computed(() => postData.value?.title || 'Không tìm thấy bài viết') },
     { name: 'twitter:description', content: computed(() => postData.value?.description || 'Bài viết không có mô tả.') },
     { name: 'twitter:image', content: postImage },
   ],
-  link: [{ rel: 'canonical', href: computed(() => `https://tomchart.com/blogs/${slug}`) }]
+  link: [{ rel: 'canonical', href: computed(() => `https://tomchart.com/blog/${slug}`) }]
 })
 
 const post = computed(() => postData.value)
