@@ -1,8 +1,7 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
-  modules: ['@nuxt/ui', '@nuxtjs/sitemap', '@nuxtjs/apollo','@nuxtjs/i18n','nuxt-gtag'],
+  modules: ['@nuxt/ui', '@nuxtjs/sitemap', '@nuxtjs/apollo', '@nuxtjs/i18n', 'nuxt-gtag'],
 
   app: {
     head: {
@@ -15,6 +14,7 @@ export default defineNuxtConfig({
       ]
     }
   },
+
   i18n: {
     locales: [
       { code: 'en', iso: 'en-US', file: 'en.json', name: 'English' },
@@ -25,22 +25,62 @@ export default defineNuxtConfig({
     strategy: 'prefix_except_default'
   },
 
-  // robots: {
-  //   UserAgent: '*',
-  //   Disallow: ['/admin', '/private'],
-  //   Allow: '/',
-  //   Sitemap: 'https://tomchart.com/sitemap.xml'
-  // },
-
   sitemap: {
     hostname: 'https://tomchart.com',
-    robots: false, // Tắt tích hợp robots.txt từ sitemap module
-    i18n: true
+    robots: false,
+    i18n: true, // Hỗ trợ đa ngôn ngữ
+    // Xác định các nguồn route
+    sources: [
+      {
+        src: async () => {
+          const GRAPHQL_ENDPOINT = 'https://directus.longpc.site/graphql';
+          const query = `
+            query GetPosts {
+              Post {
+                id
+                slug
+                date_updated
+              }
+            }
+          `.replace(/\s+/g, ' ').trim();
+
+          try {
+            const response = await fetch(GRAPHQL_ENDPOINT, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ query })
+            });
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+
+            if (result.errors) {
+              throw new Error(result.errors[0].message || 'GraphQL error');
+            }
+
+            const posts = result.data.Post || [];
+            return posts.map(post => ({
+              loc: `/blog/${post.slug.replace(/\s+/g, '-')}`, // Sử dụng "loc" thay vì "url"
+              lastmod: post.date_updated || new Date(),
+              changefreq: 'weekly',
+              priority: 0.8
+            }));
+          } catch (error) {
+            console.error('Error fetching posts for sitemap:', error);
+            return [];
+          }
+        }
+      }
+    ]
   },
 
-  // Cấu hình Apollo cho Nuxt 3
   apollo: {
-    autoImports: true, // Tự động import các composables như useQuery
+    autoImports: true,
     clients: {
       default: {
         httpEndpoint: 'https://directus.longpc.site/graphql'
@@ -54,6 +94,6 @@ export default defineNuxtConfig({
   plugins: ['~/plugins/katex.js'],
   css: ['katex/dist/katex.min.css'],
   gtag: {
-    id: 'G-24BGH0YH7H', 
+    id: 'G-24BGH0YH7H',
   }
-})
+});
